@@ -69,3 +69,20 @@ Form 로그인을 비활성화한 이유는 다음과 같습니다:
 - Spring Security를 사용하여 사용자 인증을 받을 때, 기본적으로 User 타입으로 인증을 받는다.
 - 인증된 사용자 정보(auth 변수)에 내가 원하는 값을 추가하려면 CustomUser 클래스를 생성하여 User 클래스를 상속 받아야 한다.
 - 이 프로젝트에서는 코드의 단순성과 유지보수성을 높이기 위해 CustomUser 대신 기본 제공되는 User 객체를 사용한다.
+
+<hr />
+
+## 전체적인 흐름
+- [MyUserDetailsService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FMyUserDetailsService.java) 
+  - 여기에서 뭘하고
+
+
+- [AuthenticationService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FAuthenticationService.java) 갔
+  - 여기에서는 뭘하고
+
+
+- [JwtUtil.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fjwt%2FJwtUtil.java)
+  - 여기에서 뭘 해서 만들고 
+  
+
+- 이후 수정해야함.
