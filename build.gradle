@@ -1,0 +1,59 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.0'
+	id 'io.spring.dependency-management' version '1.1.5'
+}
+
+group = 'com.hanul'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	sourceCompatibility = '17'
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// Jwt
+	implementation 'io.jsonwebtoken:jjwt-api:0.12.5'
+	implementation 'io.jsonwebtoken:jjwt-gson:0.12.5'
+	implementation 'io.jsonwebtoken:jjwt-impl:0.12.5'
+
+	runtimeOnly 'com.mysql:mysql-connector-j' // java에서 mysql접속 서포트
+	implementation 'mysql:mysql-connector-java:8.0.28' // mysql 드라이버 의존성 추가
+
+
+	// JPA : java의 ORM 표준문법 // Hibernate : JPA 쓰기좋게 구현한거
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // jpa사용, 데이터를 java로 관리
+
+	// Hibernate Validator 추가
+	implementation 'org.hibernate.validator:hibernate-validator'
+
+
+	// spring security
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// 타임리프에서 spring security 사용할 수 있게 도와줌
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6:3.1.1.RELEASE'
+
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}

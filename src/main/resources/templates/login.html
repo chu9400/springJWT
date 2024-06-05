@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>테스트</title>
+</head>
+<body>
+    <h2>로그인 페이지</h2>
+
+    <form action="/login/jwt" method="POST" >
+        <input name="username" id="username">
+        <input name="password" type="password" id="password">
+        <button type="submit">JWT 로그인</button>
+    </form>
+
+    <div th:if="${param.errorLogin}">
+        <p>아이디 또는 비밀번호가 잘못되었습니다.</p>
+    </div>
+
+</body>
+</html>
