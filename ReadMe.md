@@ -65,5 +65,7 @@ Form 로그인을 비활성화한 이유는 다음과 같습니다:
 <hr />
 
 
-## spring security의 User와 CustomUser
-- 스프링 시큐리티를 사용하여 사용자 인증을 받을 때 User 타입으로 
+## Spring Security의 User와 CustomUser
+- Spring Security를 사용하여 사용자 인증을 받을 때, 기본적으로 User 타입으로 인증을 받는다.
+- 인증된 사용자 정보(auth 변수)에 내가 원하는 값을 추가하려면 CustomUser 클래스를 생성하여 User 클래스를 상속 받아야 한다.
+- 이 프로젝트에서는 코드의 단순성과 유지보수성을 높이기 위해 CustomUser 대신 기본 제공되는 User 객체를 사용한다.
