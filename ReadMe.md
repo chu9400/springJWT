@@ -85,7 +85,7 @@ SecurityConfig.java
 
 <br />
 
-### 2. [CustomAuthenticationService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FCustomAuthenticationService.java)`CustomAuthenticationService.java`
+### 2. [CustomAuthenticationService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FCustomAuthenticationService.java)
 - 전달 받은 값으로 사용자 인증, 인증 정보 저장, JWT 생성, 그리고 쿠키 저장을 처리합니다.
 
 ```java
