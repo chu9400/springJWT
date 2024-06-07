@@ -1,19 +1,12 @@
 package com.hanul.springJWT.controller;
 
 import com.hanul.springJWT.dto.JoinDTO;
-import com.hanul.springJWT.jwt.JwtUtil;
-import com.hanul.springJWT.service.AuthenticationService;
-import com.hanul.springJWT.service.MemberService;
-import jakarta.servlet.http.Cookie;
+import com.hanul.springJWT.service.*;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -26,7 +19,7 @@ import java.util.Map;
 public class MemberController {
 
     private final MemberService memberService;
-    private final AuthenticationService authenticationService;
+    private final CustomAuthenticationService customAuthenticationService;
 
     @GetMapping("/join")
     public String join() {
@@ -59,8 +52,9 @@ public class MemberController {
     @PostMapping("/login/jwt")
     public String loginJWT(String username, String password, HttpServletResponse response) {
         try {
-            authenticationService.authenticateAndSetCookie(username, password, response);
+            customAuthenticationService.authenticateAndSetCookie(username, password, response);
             return "index";
+
         } catch (RuntimeException e) {
             System.out.println(e.getMessage());
             return "redirect:/login?errorLogin=true";

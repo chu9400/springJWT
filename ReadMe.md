@@ -5,7 +5,9 @@
 
 
 # 학습내용
-## JPA DDL 설정 
+
+
+## 1. JPA DDL 설정 
 - JPA를 사용하여 데이터베이스 테이블을 자동으로 생성하고 관리하는 방법에는 여러 가지가 있습니다. 이 글에서는 각 설정의 특징과 추천 설정 방법에 대해 설명하겠습니다.
 
 
@@ -40,25 +42,24 @@
 <hr />
 
 
-## Form 로그인 비활성화
+## 2. Form 로그인 비활성화
 
 SecurityConfig.java
-```html
+```java
 // Form 로그인 비활성화
-    http
-            .formLogin((auth) -> auth.disable());
+    http.formLogin((auth) -> auth.disable());
 ```
 
-Form 로그인을 비활성화한 이유는 다음과 같습니다:
+### Form 로그인을 비활성화한 이유는 다음과 같습니다:
 
-### 1. 필터 순서 문제
+### - 필터 순서 문제
 - 스프링 시큐리티는 로그인 요청을 처리할 때 여러 필터를 거칩니다. Form 로그인이 활성화되면 이 필터가 JWT 필터보다 먼저 실행되어 오류가 발생할 수 있습니다.
 
-### 2. JWT 로그인 방식 사용
+### - JWT 로그인 방식 사용
 - JWT 로그인 방식을 사용하기 위해서는 Form 로그인 필터를 비활성화해야 합니다. 그렇지 않으면 JWT 필터가 정상적으로 작동하지 않을 수 있습니다.
 
 
-### 3. 정리
+### - 정리
 - 따라서, http.formLogin((auth) -> auth.disable()); 코드를 통해 Form 로그인 방식을 비활성화합니다. 이를 통해 JWT 필터가 올바르게 작동하도록 설정합니다.
 - 또한 이 필터를 커스텀하여 등록해야합니다.
 
@@ -72,17 +73,74 @@ Form 로그인을 비활성화한 이유는 다음과 같습니다:
 
 <hr />
 
-## 전체적인 흐름
-- [MyUserDetailsService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FMyUserDetailsService.java) 
-  - 여기에서 뭘하고
+
+## JWT 생성
+
+### 1. [MemberController.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fcontroller%2FMemberController.java)
+- POST 요청으로 전달된 로그인 정보와 쿠키 생성을 위한 `HttpServletResponse` 객체를 JWT와 쿠키 생성 함수에 전달합니다.
+
+  ```html
+  customAuthenticationService.authenticateAndSetCookie(username, password, response);
+  ```
+
+<br />
+
+### 2. [CustomAuthenticationService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FCustomAuthenticationService.java)`CustomAuthenticationService.java`
+- 전달 받은 값으로 사용자 인증, 인증 정보 저장, JWT 생성, 그리고 쿠키 저장을 처리합니다.
+
+```java
+public void authenticateAndSetCookie(String username, String password, HttpServletResponse response) {
+  try {
+        // 사용자 인증
+        Authentication authentication = authenticationService.authenticate(username, password);
+
+        // 인증 성공 시 SecurityContextHolder에 인증 정보 저장
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // JWT 생성
+        String jwtToken = JwtUtil.createToken(authentication);
+
+        // 생성한 JWT를 쿠키에 저장
+        cookieService.addJwtCookie(response, jwtToken);
+
+    } catch (Exception e) {
+        throw new RuntimeException("로그인 증명 실패: " + e.getMessage());
+    }
+}
+```
+<br />
+<br />
+
+### 2-1. [MyUserDetailsService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FMyUserDetailsService.java)
+- authenticationService.authenticate(username, password) 코드가 실행되기 전에 MyUserDetailsService.java가 실행됩니다.
+- 로그인 정보와 데이터베이스 정보를 비교하여 일치하는 경우 User 타입 객체를 반환하여 인증 절차를 진행합니다.
 
 
-- [AuthenticationService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FAuthenticationService.java) 갔
-  - 여기에서는 뭘하고
+### 2-2. [JwtUtil.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fjwt%2FJwtUtil.java)
+- createToken 메서드를 통해 JWT를 생성합니다.
+- 이 메서드에서 JWT에 추가할 정보를 설정할 수 있습니다. 그러나 이 정보는 MyUserDetailsService에서 반환한 User 타입과 일치해야 합니다.
+- 만약 User 타입을 변경하고 싶다면, User 타입을 상속한 새로운 클래스를 생성하여 필요한 정보를 추가할 수 있습니다.
 
 
-- [JwtUtil.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fjwt%2FJwtUtil.java)
-  - 여기에서 뭘 해서 만들고 
-  
+### 2-3. [CookieService.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fservice%2FCookieService.java)
+- 쿠키의 유효기간 등 다양한 속성을 설정할 수 있습니다.
 
-- 이후 수정해야함.
+<br />
+
+### 3. [MemberController.java](src%2Fmain%2Fjava%2Fcom%2Fhanul%2FspringJWT%2Fcontroller%2FMemberController.java)
+JWT 발급이 성공하면 랜딩 페이지로 이동합니다.
+실패하면 로그인 페이지로 리다이렉트합니다.
+
+<br />
+
+
+### 4. 순서도
+![img.png](img.png)
+
+<hr />
+<hr />
+
+## jwt 인증
+
+### 1. 어디에서 시작
+ - 어디에서 시작합니다
